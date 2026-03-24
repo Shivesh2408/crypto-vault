@@ -16,7 +16,7 @@
     <artifactId>crypto-vault</artifactId>
     <version>1.0.0</version>
     <name>Crypto-Vault</name>
-    <description>Secure File Encryption & Sharing Platform</description>
+    <description>Secure File Encryption and Sharing Platform</description>
 
     <properties>
         <java.version>17</java.version>
