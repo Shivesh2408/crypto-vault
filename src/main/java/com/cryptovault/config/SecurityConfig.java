@@ -2,6 +2,7 @@ package com.cryptovault.config;
 
 import com.cryptovault.security.JwtAuthenticationFilter;
 import com.cryptovault.security.JwtTokenProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -32,9 +33,12 @@ public class SecurityConfig {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Value("${security.bcrypt.strength:12}")
+    private int bcryptStrength;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+        return new BCryptPasswordEncoder(bcryptStrength);
     }
 
     @Bean
@@ -46,6 +50,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            // CSRF is intentionally disabled: this is a stateless REST API that uses
+            // JWT tokens in the Authorization header (not cookies), making CSRF attacks
+            // inapplicable. Session management is STATELESS.
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session ->
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
